@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toda Gordura — História Contemporânea</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=IBM+Plex+Mono:wght@400;500&family=Fraunces:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0d0b;
+    --surface: #161512;
+    --surface2: #1e1c18;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: rgba(255,255,255,0.18);
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: rgba(201,168,76,0.12);
+    --red: #b84040;
+    --red-light: #e05555;
+    --cream: #f0e8d8;
+    --muted: #8a8070;
+    --text: #e8dfc8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 300;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    padding: 80px 48px 60px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    top: -60px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .site-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .site-label::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 48px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 8vw, 96px);
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    margin-bottom: 24px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .header-sub {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 520px;
+    font-weight: 300;
+  }
+
+  .period-tag {
+    display: inline-block;
+    margin-top: 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 2px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 64px 48px;
+  }
+
+  .section-intro {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-intro::before {
+    content: '';
+    display: block;
+    width: 32px; height: 1px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+
+  /* ── CARDS GRID ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 80px;
+  }
+
+  .topic-card {
+    background: var(--surface);
+    padding: 32px 28px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .topic-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+  }
+
+  .topic-card:hover { background: var(--surface2); }
+  .topic-card:hover::before { transform: scaleX(1); }
+  .topic-card.active { background: var(--surface2); }
+  .topic-card.active::before { transform: scaleX(1); background: var(--gold-light); }
+
+  .card-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    opacity: 0.6;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .card-period {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .card-arrow {
+    position: absolute;
+    bottom: 24px; right: 24px;
+    font-size: 18px;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .topic-card:hover .card-arrow { opacity: 1; transform: translate(2px, -2px); }
+  .topic-card.active .card-arrow { opacity: 1; }
+
+  /* ── CONTENT SECTION ── */
+  .content-section {
+    display: none;
+    animation: fadeSlide 0.35s ease forwards;
+  }
+  .content-section.visible { display: block; }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .content-header {
+    border-left: 3px solid var(--gold);
+    padding-left: 24px;
+    margin-bottom: 48px;
+  }
+
+  .content-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .content-header .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+  }
+
+  /* ── CONTENT BLOCKS ── */
+  .blocks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .blocks.single { grid-template-columns: 1fr; }
+  .blocks.triple { grid-template-columns: 1fr 1fr 1fr; }
+
+  @media (max-width: 700px) {
+    .blocks, .blocks.triple { grid-template-columns: 1fr; }
+    main { padding: 40px 20px; }
+    header { padding: 48px 20px 40px; }
+  }
+
+  .block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 28px 24px;
+    transition: border-color 0.2s;
+  }
+  .block:hover { border-color: var(--border-hover); }
+
+  .block-tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--gold-dim);
+    display: inline-block;
+    padding: 3px 10px;
+    margin-bottom: 14px;
+    border-radius: 2px;
+  }
+
+  .block h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .block p {
+    font-size: 14px;
+    color: #a09080;
+    line-height: 1.75;
+  }
+
+  .block ul {
+    list-style: none;
+    margin-top: 10px;
+  }
+
+  .block ul li {
+    font-size: 13px;
+    color: #a09080;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .block ul li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    opacity: 0.5;
+    font-size: 11px;
+  }
+  .block ul li:last-child { border-bottom: none; }
+
+  .block.highlight {
+    border-color: rgba(201,168,76,0.3);
+    background: linear-gradient(135deg, #1a1810 0%, #161512 100%);
+  }
+
+  .block.red-accent { border-left: 3px solid var(--red); }
+  .block.gold-accent { border-left: 3px solid var(--gold); }
+
+  .quote-block {
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin: 32px 0;
+    position: relative;
+    background: var(--surface);
+  }
+  .quote-block::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 80px;
+    color: var(--gold);
+    opacity: 0.15;
+    position: absolute;
+    top: -10px; left: 16px;
+    line-height: 1;
+  }
+  .quote-block p {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--cream);
+    opacity: 0.8;
+    line-height: 1.7;
+    padding-left: 8px;
+  }
+  .quote-block cite {
+    display: block;
+    margin-top: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    padding-left: 8px;
+  }
+
+  .timeline {
+    border-left: 1px solid var(--border);
+    padding-left: 28px;
+    margin: 16px 0;
+  }
+  .timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -33px; top: 6px;
+    width: 8px; height: 8px;
+    border: 1px solid var(--gold);
+    background: var(--bg);
+    border-radius: 50%;
+  }
+  .timeline-item .year {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .timeline-item .event {
+    font-size: 13px;
+    color: #a09080;
+    line-height: 1.6;
+  }
+
+  /* ── CLOSE BTN ── */
+  .close-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 40px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+  }
+  .close-btn:hover { color: var(--cream); border-color: var(--border-hover); }
+
+  /* ── SOURCES ── */
+  .sources {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .sources-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .sources-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .sources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+  }
+
+  .source-link {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .source-link:hover {
+    border-color: var(--border-hover);
+    background: var(--surface2);
+  }
+  .source-link .s-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+  .source-link .s-title {
+    font-size: 13px;
+    color: var(--cream);
+    line-height: 1.4;
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+  }
+  .source-link .s-domain {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+  }
+  .footer-brand em { color: var(--gold); font-style: italic; }
+  footer p {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="site-label">Resumo Acadêmico · História Contemporânea</div>
+  <h1>Toda<br><em>Gordura</em></h1>
+  <p class="header-sub">Tudo que você precisa saber sobre Imperialismo, Primeira Guerra Mundial, Revoluções Russas e Totalitarismo.</p>
+  <span class="period-tag">SÉCS. XIX – XX</span>
+</header>
+
+<main>
+  <div class="section-intro">Selecione um tema</div>
+
+  <div class="cards-grid">
+    <div class="topic-card" onclick="openTopic('imperialismo', this)">
+      <span class="card-num">01</span>
+      <div class="card-title">Imperialismo &amp; Neocolonialismo</div>
+      <div class="card-period">1870 — 1914</div>
+      <p class="card-desc">A corrida europeia por territórios na África e Ásia, o darwinismo social e a hegemonia americana.</p>
+      <span class="card-arrow">↗</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('igm', this)">
+      <span class="card-num">02</span>
+      <div class="card-title">Primeira Guerra Mundial</div>
+      <div class="card-period">1914 — 1918</div>
+      <p class="card-desc">Alianças, trincheiras, estopim em Sarajevo e o Tratado de Versalhes que reconfigurou o mundo.</p>
+      <span class="card-arrow">↗</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('russia', this)">
+      <span class="card-num">03</span>
+      <div class="card-title">Revoluções Russas</div>
+      <div class="card-period">1905 — 1922</div>
+      <p class="card-desc">Do czarismo aos soviets, de Lênin a Stalin, a formação da URSS e a Guerra Civil.</p>
+      <span class="card-arrow">↗</span>
+    </div>
+    <div class="topic-card" onclick="openTopic('totalitarismo', this)">
+      <span class="card-num">04</span>
+      <div class="card-title">Totalitarismo</div>
+      <div class="card-period">1919 — 1939</div>
+      <p class="card-desc">Fascismo italiano, nazismo alemão e stalinismo soviético: três faces do controle total do Estado.</p>
+      <span class="card-arrow">↗</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ IMPERIALISMO ═══════════════════════════════ -->
+  <div class="content-section" id="sec-imperialismo">
+    <button class="close-btn" onclick="closeSection('imperialismo')">← Voltar aos temas</button>
+    <div class="content-header">
+      <div class="subtitle">01 · 1870–1914</div>
+      <h2>Imperialismo &amp;<br>Neocolonialismo</h2>
+    </div>
+
+    <div class="blocks">
+      <div class="block highlight gold-accent">
+        <span class="block-tag">Contexto</span>
+        <h3>Por que o Neocolonialismo?</h3>
+        <p>O neocolonialismo dos séculos XIX–XX foi diferente do colonialismo clássico (sécs. XV–XVII), que se voltava às Américas. Seus três grandes motores foram a <strong>2ª Revolução Industrial</strong> (necessidade de matérias-primas e mercados consumidores), o <strong>nationalismo europeu</strong> em rota de colisão e a lógica da imposição cultural sobre povos considerados "inferiores".</p>
+      </div>
+      <div class="block">
+        <span class="block-tag">Ideologia</span>
+        <h3>Darwinismo Social &amp; Eugenia</h3>
+        <p>O conceito de "raça" foi criado para estigmatizar povos. A <em>eugenia</em> — pseudociência do "aperfeiçoamento racial" — serviu para legitimar a dominação. A ideia do <em>"fardo do homem branco"</em> justificava moralmente a conquista e a imposição cultural sobre outros povos.</p>
+      </div>
+    </div>
+
+    <div class="blocks triple">
+      <div class="block">
+        <span class="block-tag">África</span>
+        <h3>Conferência de Berlim (1884–85)</h3>
+        <p>Potências europeias dividiram o continente africano entre si, sem consultar seus habitantes.</p>
+        <ul>
+          <li>Protetorados e colônias estabelecidos à força</li>
+          <li>Batalha de Adwa — Etiópia vence a Itália (1896)</li>
+          <li>Rebelião Ashanti — resistência na África Ocidental</li>
+          <li>Hererós (Namíbia) — genocídio alemão</li>
+        </ul>
+      </div>
+      <div class="block">
+        <span class="block-tag">Ásia</span>
+        <h3>Índia, China e Japão</h3>
+        <ul>
+          <li><strong>Índia britânica:</strong> destruição da economia têxtil indiana para ampliar o mercado inglês</li>
+          <li><strong>China:</strong> Guerras do Ópio — abertura forçada ao comércio ocidental</li>
+          <li><strong>Japão:</strong> único país asiático que resistiu industrializando-se (Era Meiji × Shogunato)</li>
+        </ul>
+      </div>
+      <div class="block">
+        <span class="block-tag">Américas · EUA</span>
+        <h3>Doutrina Monroe e Big Stick</h3>
+        <ul>
+          <li>"América para os americanos"</li>
+          <li>Anexação do Havaí e Porto Rico</li>
+          <li>Emenda Platt — autoriza EUA a intervir em Cuba</li>
+          <li>1898: Independência de Cuba com apoio militar americano</li>
+          <li>Revolução Cubana: Che Guevara, Fidel Castro</li>
+          <li>Colorado, Nevada, Califórnia — originalmente mexicanos</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="quote-block">
+      <p>A corrida colonial não era apenas econômica — era também uma guerra de narrativas. Quem controlava a história controlava a legitimidade da dominação.</p>
+      <cite>— Síntese das anotações de aula</cite>
+    </div>
+
+    <div class="sources">
+      <div class="sources-title">Leituras complementares</div>
+      <div class="sources-grid">
+        <a class="source-link" href="https://www.todamateria.com.br/neocolonialismo/" target="_blank">
+          <span class="s-label">Resumo completo</span>
+          <span class="s-title">Neocolonialismo: o que foi, consequências e diferenças do colonialismo</span>
+          <span class="s-domain">todamateria.com.br</span>
+        </a>
+        <a class="source-link" href="https://www.historiadomundo.com.br/idade-contemporanea/neocolonialismo.htm" target="_blank">
+          <span class="s-label">Aprofundamento</span>
+          <span class="s-title">Neocolonialismo: o que é, características e Conferência de Berlim</span>
+          <span class="s-domain">historiadomundo.com.br</span>
+        </a>
+        <a class="source-link" href="https://psicopedagogia.com.br/blog/imperialismo-e-neocolonialismo" target="_blank">
+          <span class="s-label">Análise crítica</span>
+          <span class="s-title">Imperialismo e Neocolonialismo: contextos, consequências e atualidade</span>
+          <span class="s-domain">psicopedagogia.com.br</span>
+        </a>
+        <a class="source-link" href="https://m.suapesquisa.com/historia/imperialismo/" target="_blank">
+          <span class="s-label">Objetivos e exemplos</span>
+          <span class="s-title">Imperialismo e Neocolonialismo: características, objetivos e exemplos práticos</span>
+          <span class="s-domain">suapesquisa.com</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ 1ª GUERRA ═══════════════════════════════ -->
+  <div class="content-section" id="sec-igm">
+    <button class="close-btn" onclick="closeSection('igm')">← Voltar aos temas</button>
+    <div class="content-header">
+      <div class="subtitle">02 · 1914–1918</div>
+      <h2>Primeira<br>Guerra Mundial</h2>
+    </div>
+
+    <div class="blocks">
+      <div class="block highlight gold-accent">
+        <span class="block-tag">Antecedentes — Belle Époque</span>
+        <h3>Um mundo à beira do abismo</h3>
+        <p>A Belle Époque (fins do séc. XIX – 1914) era a "paz armada": auge do iluminismo, racionalismo científico e liberalismo burguês — mas também de um <em>nationalismo supremacista</em> que colocava as potências em rota de colisão. O imperialismo criou rivalidades irreconciliáveis. A guerra estava eminente; todos achavam que seriam mais espertos que os outros.</p>
+      </div>
+      <div class="block">
+        <span class="block-tag">Alianças</span>
+        <h3>Tríplice Entente × Tríplice Aliança</h3>
+        <ul>
+          <li><strong>Tríplice Entente:</strong> França, Rússia, Inglaterra</li>
+          <li><strong>Tríplice Aliança:</strong> Alemanha, Áustria-Hungria, Itália</li>
+          <li>Itália muda de lado durante o conflito</li>
+          <li>Turquia entra pela Tríplice Aliança</li>
+          <li>Sérvia: teste de força alemã</li>
+          <li>Península Balcânica: fragmentação e instabilidade política</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="blocks">
+      <div class="block red-accent">
+        <span class="block-tag">Estopim · 1914</span>
+        <h3>Francisco Ferdinando em Sarajevo</h3>
+        <p>O arquiduque austro-húngaro foi assassinado em Sarajevo (Bósnia) por um militante nacionalista sérvio. O mecanismo das alianças foi acionado em cascata — a chamada <em>"Grande Guerra"</em> começou. Nova divisão do território africano estava em jogo.</p>
+      </div>
+      <div class="block">
+        <span class="block-tag">Desenvolvimento</span>
+        <h3>A Guerra de Trincheiras</h3>
+        <p>A "guerra chata": insalubridade, pestes, doenças, ratos, insetos, infecções não tratadas, cadáveres em putrefação, fome e — por fim — balas. A partir de 1916: <em>armas químicas</em> (gás mostarda). O equilíbrio de forças prolongou o conflito por anos.</p>
+      </div>
+    </div>
+
+    <div class="blocks single">
+      <div class="block">
+        <span class="block-tag">Cronologia — reviravoltas</span>
+        <h3>Como a guerra terminou</h3>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="year">1917 — FEV</div>
+            <div class="event">Revolução Russa: Rússia sai da guerra. Conselhos populares (Soviets) e o Czar em colapso.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="year">1917 — ABR</div>
+            <div class="event">EUA entram na guerra ao lado da Tríplice Entente, equilibrando as forças.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="year">1918</div>
+            <div class="event">Alemanha e Áustria-Hungria se rendem. Fim da Grande Guerra.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="year">1919</div>
+            <div class="event">Tratado de Versalhes: multa à Alemanha, desmilitarização, territórios turcos e austríacos desmembrados. Semente da 2ª Guerra.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sources">
+      <div class="sources-title">Leituras complementares</div>
+      <div class="sources-grid">
+        <a class="source-link" href="https://www.todamateria.com.br/primeira-guerra-mundial/" target="_blank">
+          <span class="s-label">Resumo completo</span>
+          <span class="s-title">Primeira Guerra Mundial (1914–1918): causas, consequências e questões de vestibular</span>
+          <span class="s-domain">todamateria.com.br</span>
+        </a>
+        <a class="source-link" href="https://www.historiadomundo.com.br/idade-contemporanea/primeira-guerra-mundial.htm" target="_blank">
+          <span class="s-label">Aprofundamento</span>
+          <span class="s-title">1ª Guerra Mundial: resumo, causas, trincheiras e Tratado de Versalhes</span>
+          <span class="s-domain">historiadomundo.com.br</span>
+        </a>
+        <a class="source-link" href="https://m.suapesquisa.com/primeiraguerra/antecedentes.htm" target="_blank">
+          <span class="s-label">Antecedentes</span>
+          <span class="s-title">Causas e Antecedentes da Primeira Guerra Mundial — análise detalhada</span>
+          <span class="s-domain">suapesquisa.com</span>
+        </a>
+        <a class="source-link" href="https://pt.wikipedia.org/wiki/Primeira_Guerra_Mundial" target="_blank">
+          <span class="s-label">Referência enciclopédica</span>
+          <span class="s-title">Primeira Guerra Mundial — Wikipedia (PT)</span>
+          <span class="s-domain">pt.wikipedia.org</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ REVOLUÇÃO RUSSA ═══════════════════════════════ -->
+  <div class="content-section" id="sec-russia">
+    <button class="close-btn" onclick="closeSection('russia')">← Voltar aos temas</button>
+    <div class="content-header">
+      <div class="subtitle">03 · 1905–1922</div>
+      <h2>Revoluções<br>Russas</h2>
+    </div>
+
+    <div class="blocks">
+      <div class="block highlight gold-accent">
+        <span class="block-tag">Rússia em 1917</span>
+        <h3>Um gigante arcaico</h3>
+        <p>Monarquia absolutista dos Czares (o termo "Czar" deriva de <em>César</em>, com influência Bizantina). Território colossal que ia do Polo Norte à China. Nobreza e clero controlavam a maior parte das terras e da economia agrária. Burguesia quase inexistente — indústria dependia de capital estrangeiro (inglês, francês, alemão). Rússia potência militar do séc. 17 — mas ultrapassada.</p>
+      </div>
+      <div class="block">
+        <span class="block-tag">Crise</span>
+        <h3>Os catalisadores da Revolução</h3>
+        <ul>
+          <li>Guerra Russo-Japonesa (1904–05): derrota humilhante para o Japão</li>
+          <li>Domingo Sangrento: população revolta, massacrada</li>
+          <li>Duma (Assembleia/Parlamento): neutralização do poder czarista</li>
+          <li>Custos altíssimos da 1ª Guerra: Czar entrou por interesses próprios</li>
+          <li>Soviets (Conselhos Populares): poder paralelo ao governo, com trabalhadores rurais, urbanos e soldados</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="blocks triple">
+      <div class="block">
+        <span class="block-tag">Partido</span>
+        <h3>Mencheviques</h3>
+        <p>Reformas graduais. Lideranças: Martov e Kerensky. Visão liberal — acreditavam que as mudanças deviam vir aos poucos, pela política.</p>
+      </div>
+      <div class="block highlight">
+        <span class="block-tag">Partido</span>
+        <h3>Bolcheviques</h3>
+        <p>Socialismo revolucionário. Lideranças: <strong>Lênin, Trotsky e Stalin</strong>. Capitalismo fadado ao fracasso. Trabalhadores lideram a revolução → partilha de bens → ditadura do proletariado → comunismo.</p>
+      </div>
+      <div class="block">
+        <span class="block-tag">Estrutura</span>
+        <h3>Os Soviets</h3>
+        <p>Conselhos populares: trabalhadores rurais, camponeses, urbanos e soldados de baixa patente. Poder paralelo — "dois governos: Soviets e Czar". O Czar só intervém quando sua autoridade é contestada.</p>
+      </div>
+    </div>
+
+    <div class="blocks">
+      <div class="block red-accent">
+        <span class="block-tag">1917 — As duas revoluções</span>
+        <h3>Fevereiro × Outubro</h3>
+        <ul>
+          <li><strong>Revolução de Fevereiro:</strong> Mencheviques assumem o poder transitório</li>
+          <li><strong>Revolução de Outubro:</strong> Bolcheviques tomam o poder — Lênin como representante</li>
+          <li>Soviets apoiam a tomada de poder bolchevique</li>
+        </ul>
+      </div>
+      <div class="block">
+        <span class="block-tag">1918–1921</span>
+        <h3>Guerra Civil</h3>
+        <ul>
+          <li><strong>Exército Branco:</strong> remanescentes do Império + apoiantes mencheviques</li>
+          <li><strong>Exército Vermelho:</strong> bolcheviques resistem, liderados por Trotsky. Voluntários, lutam por si.</li>
+          <li>Comunismo de guerra: estatização brusca da economia</li>
+          <li><strong>Exército Vermelho vence.</strong> França, Alemanha e outros saem enfraquecidos.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="blocks single">
+      <div class="block highlight gold-accent">
+        <span class="block-tag">1922</span>
+        <h3>Formação da URSS — União das Repúblicas Socialistas Soviéticas</h3>
+        <p>União de países socialistas sob domínio russo. Empresas tomadas pelo Estado. Apropriação das fazendas e terras da burguesia. <em>"Todo mundo trabalha e todo mundo ganha."</em> — Partido Comunista da URSS (ex-bolchevique) governa. Morte de Lênin em 1924 → disputa Trotsky × Stalin. Stalin vence, Trotsky foge e é executado. A URSS se fecha ao mundo.</p>
+      </div>
+    </div>
+
+    <div class="sources">
+      <div class="sources-title">Leituras complementares</div>
+      <div class="sources-grid">
+        <a class="source-link" href="https://www.fflch.usp.br/65149" target="_blank">
+          <span class="s-label">Fonte universitária — USP</span>
+          <span class="s-title">Revolução Russa: análise acadêmica da FFLCH/USP</span>
+          <span class="s-domain">fflch.usp.br</span>
+        </a>
+        <a class="source-link" href="https://www.historiadomundo.com.br/idade-contemporanea/revolucao-russa.htm" target="_blank">
+          <span class="s-label">Resumo completo</span>
+          <span class="s-title">Revolução Russa: o que foi, resumo, fases e consequências</span>
+          <span class="s-domain">historiadomundo.com.br</span>
+        </a>
+        <a class="source-link" href="https://portalbrasil.eti.br/historia/historia-geral/revolucao-russa/" target="_blank">
+          <span class="s-label">Síntese e contexto</span>
+          <span class="s-title">Revolução Russa de 1917: resumo, causas e formação da URSS</span>
+          <span class="s-domain">portalbrasil.eti.br</span>
+        </a>
+        <a class="source-link" href="https://pt.wikipedia.org/wiki/Revolu%C3%A7%C3%A3o_Russa_de_1917" target="_blank">
+          <span class="s-label">Referência enciclopédica</span>
+          <span class="s-title">Revolução Russa de 1917 — Wikipedia (PT)</span>
+          <span class="s-domain">pt.wikipedia.org</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ TOTALITARISMO ═══════════════════════════════ -->
+  <div class="content-section" id="sec-totalitarismo">
+    <button class="close-btn" onclick="closeSection('totalitarismo')">← Voltar aos temas</button>
+    <div class="content-header">
+      <div class="subtitle">04 · 1919–1939</div>
+      <h2>Totalitarismo</h2>
+    </div>
+
+    <div class="blocks triple">
+      <div class="block red-accent">
+        <span class="block-tag">Itália</span>
+        <h3>Fascismo de Mussolini</h3>
+        <p>Europa arruinada pela guerra. Trabalhadores europeus inspirados pela Revolução Russa. Burguesia apoia Mussolini pelo medo da democracia. Partido Fascista: multidões sob controle do Estado. Quem não se enquadra é eliminado. Estado e povo homogêneos — "socialismo errado" na luta de classes.</p>
+      </div>
+      <div class="block red-accent">
+        <span class="block-tag">Alemanha</span>
+        <h3>Nazismo de Hitler</h3>
+        <p>Inspirado em Mussolini, mas muito mais radicalizado. Mistura de ideias de raça com fascismo = <strong>Nazifascismo</strong>. Controle de massas pelo advento do rádio e propaganda. Perseguição e campanha de difamação contra opositores. Inimigos são literalmente apagados da história.</p>
+      </div>
+      <div class="block gold-accent">
+        <span class="block-tag">URSS</span>
+        <h3>Stalinismo</h3>
+        <p>Stalin dono de todas as empresas. Recursos do Estado, riquezas das empresas para o Estado. Governo cria planos de ação para as empresas. Estado gestor central da economia. <strong>Planos Quinquenais</strong> de industrialização acelerada — enquanto o mundo capitalista sofria a Grande Depressão (1929).</p>
+      </div>
+    </div>
+
+    <div class="blocks">
+      <div class="block">
+        <span class="block-tag">Comparativo</span>
+        <h3>O que os três têm em comum</h3>
+        <ul>
+          <li>Controle total do Estado sobre a economia e a sociedade</li>
+          <li>Eliminação sistemática de opositores</li>
+          <li>Uso intenso de propaganda e controle de informações</li>
+          <li>Culto à personalidade do líder</li>
+          <li>Massas como recurso, não como sujeitos</li>
+          <li>Partido único como instrumento de dominação</li>
+        </ul>
+      </div>
+      <div class="block highlight">
+        <span class="block-tag">Contexto pós-guerra</span>
+        <h3>Por que o totalitarismo surgiu?</h3>
+        <p>A Primeira Guerra deixou a Europa destruída econômica e moralmente. A Revolução Russa assustou as burguesias europeias. A Grande Depressão de 1929 deslegitimou o liberalismo. Nesse vácuo, movimentos totalitários ofereceram ordem, identidade nacional e um inimigo claro — e as massas aceitaram.</p>
+      </div>
+    </div>
+
+    <div class="quote-block">
+      <p>O otário sempre acha que é mais esperto que os outros.</p>
+      <cite>— Citação das anotações de aula · sobre a lógica que levou às guerras e aos totalitarismos</cite>
+    </div>
+
+    <div class="sources">
+      <div class="sources-title">Leituras complementares</div>
+      <div class="sources-grid">
+        <a class="source-link" href="https://www.historiadomundo.com.br/idade-contemporanea/totalitarismo.htm" target="_blank">
+          <span class="s-label">Análise comparativa</span>
+          <span class="s-title">Totalitarismo: o que é, regimes e características — fascismo, nazismo, stalinismo</span>
+          <span class="s-domain">historiadomundo.com.br</span>
+        </a>
+        <a class="source-link" href="https://www.todamateria.com.br/regimes-totalitarios-na-europa/" target="_blank">
+          <span class="s-label">Contexto europeu</span>
+          <span class="s-title">Regimes Totalitários na Europa: fascismo, nazismo e stalinismo</span>
+          <span class="s-domain">todamateria.com.br</span>
+        </a>
+        <a class="source-link" href="https://www.todamateria.com.br/principais-caracteristicas-do-totalitarismo/" target="_blank">
+          <span class="s-label">Características principais</span>
+          <span class="s-title">Principais Características do Totalitarismo: culto ao líder, propaganda e partido único</span>
+          <span class="s-domain">todamateria.com.br</span>
+        </a>
+        <a class="source-link" href="https://www.todamateria.com.br/stalinismo-na-urss/" target="_blank">
+          <span class="s-label">Foco no Stalinismo</span>
+          <span class="s-title">Stalinismo: governo, características, Gulag e Planos Quinquenais</span>
+          <span class="s-domain">todamateria.com.br</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-brand">Toda <em>Gordura</em></div>
+  <p>Resumo acadêmico · História Contemporânea · Sécs. XIX–XX</p>
+</footer>
+
+<script>
+  let activeCard = null;
+  let activeTopic = null;
+
+  function openTopic(id, cardEl) {
+    if (activeTopic === id) {
+      closeSection(id);
+      return;
+    }
+
+    // Hide previous
+    if (activeTopic) {
+      document.getElementById('sec-' + activeTopic).classList.remove('visible');
+      if (activeCard) activeCard.classList.remove('active');
+    }
+
+    // Show new
+    activeTopic = id;
+    activeCard = cardEl;
+    cardEl.classList.add('active');
+
+    const sec = document.getElementById('sec-' + id);
+    sec.classList.add('visible');
+
+    // Scroll to content
+    setTimeout(() => {
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 60);
+  }
+
+  function closeSection(id) {
+    document.getElementById('sec-' + id).classList.remove('visible');
+    if (activeCard) activeCard.classList.remove('active');
+    activeCard = null;
+    activeTopic = null;
+    document.querySelector('.cards-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+
+</body>
+</html>
